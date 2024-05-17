@@ -15,15 +15,14 @@ final authProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
 
 //! implementacion del authNotifier
 class AuthNotifier extends StateNotifier<AuthState> {
-
   final AuthRepository authRepository;
   final KeyValueStorageServices keyValueStorageServices;
-  
-  AuthNotifier({
-    required this.keyValueStorageServices, 
-    required this.authRepository
-  }) : super(AuthState());
 
+  AuthNotifier(
+      {required this.keyValueStorageServices, required this.authRepository})
+      : super(AuthState()) {
+        checkAuthStatus();
+      }
 
   Future<void> loginUser(String email, String password) async {
     await Future.delayed(const Duration(milliseconds: 500));
@@ -34,7 +33,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
     } on CustomError catch (e) {
       logout(e.message);
     } catch (e) {
-      logout('Somenthig happend, please try again later');
+      logout('Error, please try again later');
     }
   }
 
@@ -50,10 +49,19 @@ class AuthNotifier extends StateNotifier<AuthState> {
     }
   }
 
-  void checkAuthStatus() async {}
+  void checkAuthStatus() async {
+    final token = await keyValueStorageServices.getValue<String>('token');
+    if (token == null) return logout();
+    try {
+      final user = await authRepository.checkAuthStatus(token);
+      _setLoggedUser(user);
+    } catch (e) {
+      logout();
+    }
+  }
 
   _setLoggedUser(User user) async {
-   await  keyValueStorageServices.setKeyValue('token', user.token);
+    await keyValueStorageServices.setKeyValue('token', user.token);
     state = state.copyWith(
       status: AuthStatus.authenticated,
       user: user,
@@ -66,11 +74,8 @@ class AuthNotifier extends StateNotifier<AuthState> {
     state = state.copyWith(
         status: AuthStatus.unauthenticated,
         user: null,
-        errorMessage: errorMessage
-    );
+        errorMessage: errorMessage);
   }
-
-  
 }
 
 //! State
