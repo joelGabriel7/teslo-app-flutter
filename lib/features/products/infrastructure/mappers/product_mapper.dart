@@ -10,7 +10,7 @@ class ProductMapper {
       description: json['description'],
       slug: json['slug'],
       stock: json['stock'],
-      sizes: List<String>.from(['sizes'].map((sizes) => sizes)),
+      sizes: List<String>.from(json['sizes'].map((sizes) => sizes)),
       gender: json['gender'],
       tags: List<String>.from(json['tags'].map((tag) => tag)),
       images: List<String>.from(

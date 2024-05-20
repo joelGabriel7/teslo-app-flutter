@@ -7,7 +7,7 @@ class Products {
   String description;
   String slug;
   int stock;
-  List <String> sizes;
+  List<String> sizes;
   String gender;
   List<String> tags;
   List<String> images;
@@ -24,7 +24,7 @@ class Products {
     required this.gender,
     required this.tags,
     required this.images,
-    required this.user,
+    this.user,
   });
 
 }
