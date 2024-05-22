@@ -35,12 +35,12 @@ final goRouterProvider = Provider((ref) {
       ),
       GoRoute(
         path: '/products/:productId',
-        builder: (context, state) =>  ProductScreen(productId: state.params['productId'] ?? 'no-id'),
+        builder: (context, state) =>  ProductScreen(productId: state.pathParameters['productId'] ?? 'no-id'),
       ),
     ],
     redirect: (context, state) {
 
-      final isGoingTo = state.subloc;
+      final isGoingTo = state.fullPath;
       final authStatus = goRouterNotifier.authStatus;
 
       if (isGoingTo == '/check' && authStatus == AuthStatus.checking) return null;

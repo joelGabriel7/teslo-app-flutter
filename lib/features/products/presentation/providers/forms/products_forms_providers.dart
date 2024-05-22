@@ -8,9 +8,11 @@ import '../../../domain/domain.dart';
 
 //! Provider
 
-final productFormProvider = StateNotifierProvider.autoDispose.family<ProductFormNotifier, ProductFormState, Products>((ref, product) {
+final productFormProvider = StateNotifierProvider.autoDispose
+    .family<ProductFormNotifier, ProductFormState, Products>((ref, product) {
   // final createUpdateCallback = ref.watch(productsReporistoryProvider).createUpdateProduct;
-  final createUpdateCallback = ref.watch(productsProvider.notifier).createOrUpdateProduct;
+  final createUpdateCallback =
+      ref.watch(productsProvider.notifier).createOrUpdateProduct;
 
   return ProductFormNotifier(
       product: product, onSubmitCallback: createUpdateCallback
@@ -62,7 +64,7 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
     };
 
     try {
-        return await onSubmitCallback!(productLike);
+      return await onSubmitCallback!(productLike);
     } catch (e) {
       return false;
     }
@@ -87,6 +89,12 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
           Price.dirty(state.price.value),
           Stock.dirty(state.inStock.value),
         ]));
+  }
+
+  void updateProductImage(String path) {
+    state = state.copyWith(
+      images: [...state.images, path]
+    );
   }
 
   void onSlugChanged(String value) {
